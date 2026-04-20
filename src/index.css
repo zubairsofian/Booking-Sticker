@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+body {
+  background-color: #F7F7F7;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+}
+
+.brutalist-border {
+  border: 3px solid #000;
+  box-shadow: 6px 6px 0px #000;
+}
+
+.neo-shadow {
+  box-shadow: 4px 4px 0px #000;
+}
+
+input:focus {
+  outline: none;
+  border-color: #000;
+}
