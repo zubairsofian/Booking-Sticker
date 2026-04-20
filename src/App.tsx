@@ -1,5 +1,26 @@
 import { useState } from 'react';
-import { Car, Bike, Plus, Minus, CreditCard, User, ShoppingBag, CheckCircle } from 'lucide-react';
+import { Plus, Minus, CreditCard, User, ShoppingBag, CheckCircle } from 'lucide-react';
+
+const AnimatedCar = ({ size = 24, strokeWidth = 2, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M2 10h2" className="animate-pulse" />
+    <path d="M0 14h4" className="animate-pulse" style={{ animationDelay: '0.2s' }} />
+    <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+    <path d="M9 17h6"/>
+    <circle cx="7" cy="17" r="2" strokeDasharray="3 3" className="animate-spin" style={{ transformOrigin: '7px 17px', animationDuration: '1s' }}/>
+    <circle cx="17" cy="17" r="2" strokeDasharray="3 3" className="animate-spin" style={{ transformOrigin: '17px 17px', animationDuration: '1s' }}/>
+  </svg>
+);
+
+const AnimatedMotor = ({ size = 24, strokeWidth = 2, color = "currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M2 11h2" className="animate-pulse" />
+    <path d="M0 15h3" className="animate-pulse" style={{ animationDelay: '0.3s' }} />
+    <path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5V14l-3-3 4-3 2 3h2"/>
+    <circle cx="5.5" cy="17.5" r="3.5" strokeDasharray="4 4" className="animate-spin" style={{ transformOrigin: '5.5px 17.5px', animationDuration: '1s' }} />
+    <circle cx="18.5" cy="17.5" r="3.5" strokeDasharray="4 4" className="animate-spin" style={{ transformOrigin: '18.5px 17.5px', animationDuration: '1s' }} />
+  </svg>
+);
 
 const HARGA_KERETA = 5;
 const HARGA_MOTOR = 5;
@@ -113,7 +134,7 @@ export default function App() {
                 {/* Sticker Kereta */}
                 <div className="bg-white p-6 brutalist-border flex flex-col items-center gap-4">
                   <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center">
-                    <Car size={48} strokeWidth={2} color="black" />
+                    <AnimatedCar size={48} strokeWidth={2} color="black" />
                   </div>
                   <h3 className="text-xl font-black uppercase">KERETA</h3>
                   <div className="flex items-center gap-4 bg-black p-1 text-white w-full justify-center">
@@ -140,7 +161,7 @@ export default function App() {
                 {/* Sticker Motor */}
                 <div className="bg-white p-6 brutalist-border flex flex-col items-center gap-4">
                   <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
-                    <Bike size={48} strokeWidth={2} color="black" />
+                    <AnimatedMotor size={48} strokeWidth={2} color="black" />
                   </div>
                   <h3 className="text-xl font-black uppercase">Motosikal</h3>
                   <div className="flex items-center gap-4 bg-black p-1 text-white w-full justify-center">
