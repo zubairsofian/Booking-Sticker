@@ -277,6 +277,20 @@ function CustomerApp() {
               <p className="mt-5 text-center text-sm md:text-base font-bold uppercase tracking-tighter opacity-80 text-black">
                 Terima Kasih.
               </p>
+
+              <div className="mt-8 pt-8 border-t-4 border-black">
+                <span className="block text-xs font-black uppercase tracking-widest mb-4 text-center opacity-70">Sticker Preview</span>
+                <div className="pointer-events-none flex flex-col items-center justify-center">
+                  <img 
+                    src="https://i.postimg.cc/7P2H9FZT/IMG-20260422-155648-090.png" 
+                    alt="Sticker Preview" 
+                    className="w-full max-w-sm h-auto drop-shadow-xl"
+                  />
+                  <div className="mt-6 border-2 border-black inline-block px-4 py-2 bg-white/50 text-black text-xs font-black tracking-widest uppercase neo-shadow-sm">
+                    Saiz: 4 inch (T) x 4 inch (L)
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -342,7 +356,8 @@ function AdminApp() {
   };
 
   const totalDikutip = orders.filter(o => o.dahBayar).reduce((sum, o) => sum + (o.jumlahKeseluruhan || 0), 0);
-  const totalSticker = orders.reduce((sum, o) => sum + (o.kuantitiKereta || 0) + (o.kuantitiMotor || 0), 0);
+  const totalKereta = orders.reduce((sum, o) => sum + (o.kuantitiKereta || 0), 0);
+  const totalMotor = orders.reduce((sum, o) => sum + (o.kuantitiMotor || 0), 0);
 
   return (
     <div className="min-h-screen bg-[#F7F7F7] p-4 md:p-8 font-sans flex flex-col items-center">
@@ -372,18 +387,22 @@ function AdminApp() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <div className="bg-yellow-400 p-6 brutalist-border flex flex-col justify-center">
-            <span className="text-sm font-black uppercase opacity-60">Jumlah Tempahan</span>
-            <span className="text-5xl font-black">{orders.length}</span>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
+          <div className="col-span-2 lg:col-span-1 bg-yellow-400 p-4 md:p-6 brutalist-border flex flex-col justify-center">
+            <span className="text-xs md:text-sm font-black uppercase opacity-60">Tempahan</span>
+            <span className="text-4xl md:text-5xl font-black">{orders.length}</span>
           </div>
-          <div className="bg-blue-300 p-6 brutalist-border flex flex-col justify-center">
-            <span className="text-sm font-black uppercase opacity-60">Jumlah Sticker Terjual</span>
-            <span className="text-5xl font-black">{totalSticker}</span>
+          <div className="bg-pink-300 p-4 md:p-6 brutalist-border flex flex-col justify-center">
+            <span className="text-xs md:text-sm font-black uppercase opacity-60">Sticker Kereta</span>
+            <span className="text-4xl md:text-5xl font-black">{totalKereta}</span>
           </div>
-          <div className="bg-green-400 p-6 brutalist-border flex flex-col justify-center">
-            <span className="text-sm font-black uppercase opacity-60">Kutipan Disahkan</span>
-            <span className="text-4xl lg:text-5xl font-black">RM {totalDikutip}</span>
+          <div className="bg-blue-300 p-4 md:p-6 brutalist-border flex flex-col justify-center">
+            <span className="text-xs md:text-sm font-black uppercase opacity-60">Sticker Motor</span>
+            <span className="text-4xl md:text-5xl font-black">{totalMotor}</span>
+          </div>
+          <div className="col-span-2 lg:col-span-1 bg-green-400 p-4 md:p-6 brutalist-border flex flex-col justify-center">
+            <span className="text-xs md:text-sm font-black uppercase opacity-60">Kutipan Sah</span>
+            <span className="text-3xl lg:text-4xl font-black">RM {totalDikutip}</span>
           </div>
         </div>
 
