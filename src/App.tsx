@@ -17,8 +17,8 @@ interface Order {
 // Gantikan dengan URL Web App anda selepas deploy di Google Apps Script
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxDaGp-FH8qEE1yTE5vnfUtUR23mmMa-kuAIhEuTuwjn5Jnd7moUGQ6W5gryno79lGM/exec';
 
-const HARGA_KERETA = 5;
-const HARGA_MOTOR = 5;
+const HARGA_KERETA = 6;
+const HARGA_MOTOR = 6;
 
 const AnimatedCar = ({ size = 24, strokeWidth = 2, color = "currentColor" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
