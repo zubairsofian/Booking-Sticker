@@ -50,6 +50,7 @@ function CustomerApp() {
   const [kuantitiMotor, setKuantitiMotor] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSavedMessage, setShowSavedMessage] = useState(false);
 
   const totalKereta = kuantitiKereta * HARGA_KERETA;
   const totalMotor = kuantitiMotor * HARGA_MOTOR;
@@ -76,14 +77,21 @@ function CustomerApp() {
           mode: 'no-cors',
           body: JSON.stringify(newOrder)
         });
-        setIsSuccess(true);
+        setIsSubmitting(false);
+        setShowSavedMessage(true);
+        setTimeout(() => {
+          setShowSavedMessage(false);
+          setIsSuccess(true);
+        }, 2000);
       } catch (error) {
         console.error("Gagal hantar pesanan", error);
-        // Teruskan juga ke ruangan kejayaan jika ralat network (anda boleh ubah suai jika mahu halang pelanggan)
         alert("Ralat semasa menyambung ke server. Kod akan cuba disambung selepas URL dimasukkan.");
-        setIsSuccess(true);
-      } finally {
         setIsSubmitting(false);
+        setShowSavedMessage(true);
+        setTimeout(() => {
+          setShowSavedMessage(false);
+          setIsSuccess(true);
+        }, 2000);
       }
     }
   };
@@ -109,10 +117,23 @@ function CustomerApp() {
 
   const handleReset = () => {
     setIsSuccess(false);
+    setShowSavedMessage(false);
     setNama('');
     setKuantitiKereta(0);
     setKuantitiMotor(0);
   };
+
+  if (showSavedMessage) {
+    return (
+      <div className="p-4 md:p-8 min-h-screen flex flex-col items-center justify-center bg-[#F7F7F7]">
+        <div className="max-w-[600px] w-full bg-green-400 p-8 md:p-16 brutalist-border flex flex-col items-center justify-center text-center animate-in zoom-in duration-500">
+           <CheckCircle size={80} className="mb-6 animate-bounce text-black" />
+           <h1 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter mb-4 text-black">Tempahan Berjaya Disimpan</h1>
+           <p className="text-sm md:text-lg font-bold uppercase mt-2 opacity-80 text-black">Membawa anda ke halaman pembayaran...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (isSuccess) {
     return (
