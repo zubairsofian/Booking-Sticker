@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+  import React, { useState, useEffect } from 'react';
 import { Plus, Minus, CreditCard, User, ShoppingBag, CheckCircle, Database, Check, RefreshCw, AlertCircle } from 'lucide-react';
 
 interface Order {
@@ -329,6 +329,14 @@ function AdminApp() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // State for manual order entry
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [manualNama, setManualNama] = useState('');
+  const [manualKereta, setManualKereta] = useState(0);
+  const [manualMotor, setManualMotor] = useState(0);
+  const [manualDahBayar, setManualDahBayar] = useState(true); // Default sudah bayar jika offline
+  const [isAdding, setIsAdding] = useState(false);
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -373,6 +381,46 @@ function AdminApp() {
          order.id === orderId ? { ...order, dahBayar: currentStatus } : order
        ));
        alert("Gagal mengemaskini status bayaran di server.");
+    }
+  };
+
+  const handleTambahManual = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!manualNama.trim() || (manualKereta === 0 && manualMotor === 0)) {
+      alert("Sila masukkan nama dan pastikan ada sekurang-kurangnya 1 sticker yang ditempah.");
+      return;
+    }
+    
+    setIsAdding(true);
+    const jum = (manualKereta * HARGA_KERETA) + (manualMotor * HARGA_MOTOR);
+    
+    const newOrder: Order = {
+      id: Date.now().toString(),
+      nama: manualNama + " (Offline)",
+      kuantitiKereta: manualKereta,
+      kuantitiMotor: manualMotor,
+      jumlahKeseluruhan: jum,
+      tarikh: new Date().toLocaleString('ms-MY'),
+      dahBayar: manualDahBayar
+    };
+
+    try {
+      await fetch(`${SCRIPT_URL}?action=create`, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify(newOrder)
+      });
+      // Optimistically update UI so we don't have to fetch all again immediately
+      setOrders([newOrder, ...orders]); 
+      setShowAddForm(false);
+      setManualNama('');
+      setManualKereta(0);
+      setManualMotor(0);
+      setManualDahBayar(true);
+    } catch (err) {
+      alert("Gagal menyimpan tempahan manual. Sila cuba lagi.");
+    } finally {
+      setIsAdding(false);
     }
   };
 
@@ -426,6 +474,82 @@ function AdminApp() {
             <span className="text-3xl lg:text-4xl font-black">RM {totalDikutip}</span>
           </div>
         </div>
+
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl md:text-2xl font-black uppercase tracking-widest">Senarai Tempahan</h2>
+          <button 
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white border-4 border-black px-4 py-2 font-black uppercase tracking-widest text-xs md:text-sm transition-colors cursor-pointer"
+          >
+            <Plus size={18} strokeWidth={3} /> Tambah Offline
+          </button>
+        </div>
+
+        {showAddForm && (
+          <form onSubmit={handleTambahManual} className="bg-gray-100 p-6 md:p-8 border-4 border-black mb-8 brutalist-border relative animate-in slide-in-from-top-4">
+            <h3 className="font-black uppercase text-xl mb-6 flex items-center gap-2"><User size={24}/> Daftar Tempahan Offline</h3>
+            
+            <div className="space-y-5">
+              <div>
+                <label className="block font-bold text-sm uppercase tracking-widest mb-2">Nama Pelanggan / Catatan</label>
+                <input 
+                  type="text" 
+                  value={manualNama}
+                  onChange={(e) => setManualNama(e.target.value)}
+                  className="w-full border-4 border-black p-3 font-bold bg-white outline-none focus:bg-blue-50 transition-colors"
+                  placeholder="Cth: Ahmad (Cash)"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-bold text-sm uppercase tracking-widest mb-2">Sticker Kereta</label>
+                  <div className="flex items-center border-4 border-black bg-white">
+                    <button type="button" onClick={() => setManualKereta(Math.max(0, manualKereta - 1))} className="p-3 border-r-4 border-black hover:bg-gray-200 cursor-pointer transition-colors"><Minus size={18}/></button>
+                    <span className="flex-1 text-center font-black text-xl tabular-nums">{manualKereta}</span>
+                    <button type="button" onClick={() => setManualKereta(manualKereta + 1)} className="p-3 border-l-4 border-black hover:bg-gray-200 cursor-pointer transition-colors"><Plus size={18}/></button>
+                  </div>
+                </div>
+                <div>
+                  <label className="block font-bold text-sm uppercase tracking-widest mb-2">Sticker Motor</label>
+                  <div className="flex items-center border-4 border-black bg-white">
+                    <button type="button" onClick={() => setManualMotor(Math.max(0, manualMotor - 1))} className="p-3 border-r-4 border-black hover:bg-gray-200 cursor-pointer transition-colors"><Minus size={18}/></button>
+                    <span className="flex-1 text-center font-black text-xl tabular-nums">{manualMotor}</span>
+                    <button type="button" onClick={() => setManualMotor(manualMotor + 1)} className="p-3 border-l-4 border-black hover:bg-gray-200 cursor-pointer transition-colors"><Plus size={18}/></button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 bg-white p-4 border-4 border-black cursor-pointer" onClick={() => setManualDahBayar(!manualDahBayar)}>
+                <div className={`w-8 h-8 flex items-center justify-center border-4 border-black ${manualDahBayar ? 'bg-black text-white' : 'bg-transparent text-transparent'}`}>
+                  <Check size={20} strokeWidth={4} />
+                </div>
+                <div>
+                  <div className="font-black uppercase tracking-widest text-sm">Status: Telah Dibayar?</div>
+                  <div className="text-xs text-gray-500 font-bold">Tandakan jika pelanggan sudah bayar cash.</div>
+                </div>
+              </div>
+
+              <div className="pt-4 flex gap-4">
+                <button 
+                  type="submit" 
+                  disabled={isAdding}
+                  className="flex-1 bg-black text-white border-4 border-black p-4 font-black uppercase tracking-widest hover:bg-gray-800 transition-colors disabled:opacity-50 cursor-pointer"
+                >
+                  {isAdding ? "Menyimpan..." : `Simpan RM ${(manualKereta*HARGA_KERETA) + (manualMotor*HARGA_MOTOR)}`}
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => setShowAddForm(false)}
+                  className="bg-white text-black border-4 border-black p-4 font-black uppercase tracking-widest hover:bg-gray-100 transition-colors cursor-pointer"
+                >
+                  Batal
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
 
         <div className="overflow-x-auto border-4 border-black">
           <table className="w-full text-left font-bold min-w-[700px]">
